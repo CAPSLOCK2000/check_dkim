@@ -1,0 +1,36 @@
+#!/usr/bin/make -f
+# See debhelper(7) (uncomment to enable)
+# output every command that modifies files on the build system.
+#export DH_VERBOSE = 1
+
+export PYBUILD_NAME=checkdkim
+
+%:
+	dh $@ --with python3 --buildsystem=pybuild
+
+
+# If you need to rebuild the Sphinx documentation
+# Add spinxdoc to the dh --with line
+#override_dh_auto_build:
+#	dh_auto_build
+#	PYTHONPATH=. http_proxy='127.0.0.1:9' sphinx3-build -N -bhtml        docs/ build/html # HTML generator
+#	PYTHONPATH=. http_proxy='127.0.0.1:9' sphinx3-build -N -bman        docs/ build/man # Manpage generator
+
+NAME=checkdkim
+VERSION=0.2.3
+REPO=https://github.com/countsudoku/check_dkim.git
+GITSHA1=bb26848338aaa0a358663ed9cb72ece906884e98 # git rev-parse HEAD
+DIR=$(NAME)_$(VERSION)
+ORIG=orig-source/$(DIR)
+TAR=$(ORIG).orig.tar
+
+get-orig-source:
+	rm -rf orig-source
+	mkdir orig-source
+	git clone  $(REPO) $(ORIG)
+	git -C $(ORIG) reset --hard $(GITSHA1)
+	git -C $(ORIG) archive --format=tar --prefix=$(DIR)/ --output=../../$(TAR) HEAD
+	xz $(TAR)
+	mv $(TAR).xz ..
+	rm -rf orig-source
+
