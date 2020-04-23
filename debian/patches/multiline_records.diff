@@ -1,9 +1,0 @@
---- a/check_dkim/Domainkey.py
-+++ b/check_dkim/Domainkey.py
-@@ -123,5 +123,5 @@
-                     selector=selector,
-                     domain=domain,
-                 ))
--        domainkey_string = answer[0].to_text().strip('\'"')
-+        domainkey_string = answer[0].to_text().replace('" "', '').strip('\'"')
-         return cls.parse_domainkey(domainkey_string)
